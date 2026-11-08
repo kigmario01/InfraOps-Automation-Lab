@@ -1,0 +1,20 @@
+# Variables specific to managed Linux servers
+---
+# Security Hardening settings
+ssh_port: 22
+ssh_permit_root_login: "no"
+ssh_password_authentication: "no"
+ssh_max_auth_tries: 3
+
+# UFW Firewall allowed incoming ports
+ufw_allowed_tcp_ports:
+  - 22      # SSH
+  - 80      # HTTP
+  - 443     # HTTPS
+  - 8080    # Custom Web App
+  - 3001    # Uptime Kuma
+  - 9100    # Node Exporter (internal scraping)
+
+# Docker Compose deployment paths
+docker_deploy_dir: "/opt/infraops-stack"
+backup_cron_schedule: "0 2 * * *" # Daily at 02:00 UTC

@@ -1,0 +1,26 @@
+# Global Ansible Variables - InfraOps Automation Lab
+---
+sysadmin_user: sysadmin
+sysadmin_groups: "sudo,adm"
+timezone: "UTC"
+
+# Core packages required across all Ubuntu hosts
+common_packages:
+  - curl
+  - wget
+  - git
+  - htop
+  - net-tools
+  - ufw
+  - fail2ban
+  - jq
+  - python3-pip
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - unattended-upgrades
+
+# Observability endpoints & ports
+node_exporter_port: 9100
+nginx_http_port: 8080
+uptime_kuma_port: 3001

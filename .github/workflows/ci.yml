@@ -1,0 +1,54 @@
+name: InfraOps CI Pipeline
+
+on:
+  push:
+    branches: [ "main", "master", "develop" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  lint-and-test:
+    name: Lint, Test & Validate Infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ansible ansible-lint flake8
+
+      - name: Lint Python Code (Flake8)
+        run: |
+          flake8 python tests --max-line-length=110 --extend-ignore=E203,W503
+
+      - name: Run Python Automated Tests (Pytest)
+        run: |
+          pytest tests -v --cov=python --cov-report=term-missing
+
+      - name: Run ShellCheck on Bash Scripts
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: './bash'
+
+      - name: Validate Ansible Playbooks Syntax
+        run: |
+          ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/site.yml --syntax-check
+          ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/01_system_bootstrap.yml --syntax-check
+          ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/02_security_hardening.yml --syntax-check
+          ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/03_docker_setup.yml --syntax-check
+          ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/04_app_deploy.yml --syntax-check
+          ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/05_backup_config.yml --syntax-check
+
+      - name: Validate Docker Compose Configuration
+        run: |
+          docker compose -f docker/compose.yaml config
+          docker compose -f sandbox/docker-compose.lab.yml config

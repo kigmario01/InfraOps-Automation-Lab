@@ -1,0 +1,16 @@
+---
+# Master Orchestration Playbook - InfraOps Automation Lab
+- name: 01 - Bootstrap Base System & Dependencies
+  ansible.builtin.import_playbook: 01_system_bootstrap.yml
+
+- name: 02 - Apply Security Hardening & Firewall
+  ansible.builtin.import_playbook: 02_security_hardening.yml
+
+- name: 03 - Install & Configure Docker Runtime
+  ansible.builtin.import_playbook: 03_docker_setup.yml
+
+- name: 04 - Deploy Applications & Observability Stack
+  ansible.builtin.import_playbook: 04_app_deploy.yml
+
+- name: 05 - Configure Automated Backup Cron
+  ansible.builtin.import_playbook: 05_backup_config.yml

@@ -1,0 +1,9 @@
+---
+# Playbook 02: Security Hardening & Firewall
+- name: Apply security baseline and firewall rules
+  hosts: managed_nodes:sandbox
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - role: security

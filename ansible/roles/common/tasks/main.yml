@@ -1,0 +1,39 @@
+---
+# Common base setup role
+- name: Update apt package cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+  ignore_errors: yes
+
+- name: Install essential baseline utilities
+  ansible.builtin.package:
+    name: "{{ common_packages }}"
+    state: present
+
+- name: Ensure sysadmin group exists
+  ansible.builtin.group:
+    name: "{{ sysadmin_user }}"
+    state: present
+
+- name: Ensure sysadmin user exists with sudo privileges
+  ansible.builtin.user:
+    name: "{{ sysadmin_user }}"
+    groups: "{{ sysadmin_groups }}"
+    append: yes
+    shell: /bin/bash
+    create_home: yes
+    state: present
+
+- name: Configure passwordless sudo for sysadmin user
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/99-sysadmin
+    line: "{{ sysadmin_user }} ALL=(ALL) NOPASSWD:ALL"
+    validate: "/usr/sbin/visudo -cf %s"
+    create: yes
+    mode: "0440"

@@ -1,0 +1,65 @@
+---
+# Docker Engine & Docker Compose setup role
+- name: Install Docker prerequisites
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Create directory for Docker apt keyrings
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add Docker official GPG key
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: "0644"
+  when: ansible_os_family == "Debian"
+
+- name: Add Docker official apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+  when: ansible_os_family == "Debian"
+
+- name: Install Docker CE, CLI, and Compose plugin
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Deploy optimized Docker daemon.json
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart docker
+
+- name: Ensure Docker service is enabled and started
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Add sysadmin user to docker group
+  ansible.builtin.user:
+    name: "{{ sysadmin_user }}"
+    groups: docker
+    append: yes

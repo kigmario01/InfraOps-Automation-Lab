@@ -1,0 +1,43 @@
+# Simulated Ubuntu Target Nodes for Local Testing & Portfolio Demonstrations
+services:
+  lab-node-01:
+    image: rastasheep/ubuntu-sshd:18.04
+    container_name: infraops-target-01
+    restart: unless-stopped
+    ports:
+      - "2222:22"
+    environment:
+      - ROOT_PASSWORD=SysAdminLab2026!
+    command: >
+      /bin/bash -c "
+      useradd -m -s /bin/bash sysadmin &&
+      echo 'sysadmin:SysAdminLab2026!' | chpasswd &&
+      usermod -aG sudo sysadmin &&
+      echo 'sysadmin ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/99-sysadmin &&
+      chmod 0440 /etc/sudoers.d/99-sysadmin &&
+      /usr/sbin/sshd -D"
+    networks:
+      - sandbox-net
+
+  lab-node-02:
+    image: rastasheep/ubuntu-sshd:18.04
+    container_name: infraops-target-02
+    restart: unless-stopped
+    ports:
+      - "2223:22"
+    environment:
+      - ROOT_PASSWORD=SysAdminLab2026!
+    command: >
+      /bin/bash -c "
+      useradd -m -s /bin/bash sysadmin &&
+      echo 'sysadmin:SysAdminLab2026!' | chpasswd &&
+      usermod -aG sudo sysadmin &&
+      echo 'sysadmin ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/99-sysadmin &&
+      chmod 0440 /etc/sudoers.d/99-sysadmin &&
+      /usr/sbin/sshd -D"
+    networks:
+      - sandbox-net
+
+networks:
+  sandbox-net:
+    driver: bridge

@@ -1,0 +1,10 @@
+---
+# Playbook 03: Docker Engine & Compose Setup
+- name: Setup Docker and monitoring exporter
+  hosts: managed_nodes:sandbox
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - role: docker
+    - role: monitoring_agent

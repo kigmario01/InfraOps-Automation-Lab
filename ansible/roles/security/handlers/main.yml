@@ -1,0 +1,11 @@
+---
+# Handlers for security role
+- name: Restart sshd
+  ansible.builtin.service:
+    name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+    state: restarted
+
+- name: Apply sysctl
+  ansible.builtin.command:
+    cmd: sysctl --system
+  changed_when: true

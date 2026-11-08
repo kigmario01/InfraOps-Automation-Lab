@@ -1,0 +1,68 @@
+services:
+  # 1. Reverse Proxy & Lightweight Web Service
+  web-app:
+    image: nginx:alpine
+    container_name: infraops-web-app
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/html:/usr/share/nginx/html:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost/healthz || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    networks:
+      - infraops-net
+
+  # 2. Uptime Kuma (Lightweight, all-in-one status page & alerting)
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: infraops-uptime-kuma
+    restart: unless-stopped
+    ports:
+      - "${MONITORING_PORT:-3001}:3001"
+    volumes:
+      - uptime-kuma-data:/app/data
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+    networks:
+      - infraops-net
+
+  # 3. Prometheus Node Exporter (Host Telemetry)
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: infraops-node-exporter
+    restart: unless-stopped
+    ports:
+      - "${NODE_EXPORTER_PORT:-9100}:9100"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+    networks:
+      - infraops-net
+
+networks:
+  infraops-net:
+    driver: bridge
+
+volumes:
+  uptime-kuma-data:
+    driver: local

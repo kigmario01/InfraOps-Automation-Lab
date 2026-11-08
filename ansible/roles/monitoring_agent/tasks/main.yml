@@ -1,0 +1,51 @@
+---
+# Monitoring agent (Prometheus Node Exporter) setup
+- name: Create node_exporter system user
+  ansible.builtin.user:
+    name: node_exporter
+    system: yes
+    shell: /usr/sbin/nologin
+    create_home: no
+
+- name: Check if node_exporter binary already exists
+  ansible.builtin.stat:
+    path: /usr/local/bin/node_exporter
+  register: node_exporter_bin
+
+- name: Download and unpack node_exporter
+  ansible.builtin.unarchive:
+    src: "https://github.com/prometheus/node_exporter/releases/download/v1.8.1/node_exporter-1.8.1.linux-amd64.tar.gz"
+    dest: /tmp/
+    remote_src: yes
+  when: not node_exporter_bin.stat.exists
+  ignore_errors: yes
+
+- name: Install node_exporter binary to /usr/local/bin
+  ansible.builtin.copy:
+    src: /tmp/node_exporter-1.8.1.linux-amd64/node_exporter
+    dest: /usr/local/bin/node_exporter
+    remote_src: yes
+    owner: node_exporter
+    group: node_exporter
+    mode: "0755"
+  when: not node_exporter_bin.stat.exists
+  ignore_errors: yes
+
+- name: Deploy node_exporter systemd service unit
+  ansible.builtin.template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart node_exporter
+  ignore_errors: yes
+
+- name: Ensure node_exporter is enabled and running
+  ansible.builtin.service:
+    name: node_exporter
+    state: started
+    enabled: yes
+  ignore_errors: yes

@@ -1,0 +1,53 @@
+---
+# Security hardening role
+- name: Deploy hardened sshd_config
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0600"
+    validate: "/usr/sbin/sshd -t -f %s"
+  notify: Restart sshd
+
+- name: Deploy sysctl network hardening parameters
+  ansible.builtin.template:
+    src: 99-sysctl-security.conf.j2
+    dest: /etc/sysctl.d/99-infraops-security.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Apply sysctl
+  ignore_errors: yes
+
+- name: Configure UFW default incoming policy
+  community.general.ufw:
+    direction: incoming
+    policy: deny
+  ignore_errors: yes
+
+- name: Configure UFW default outgoing policy
+  community.general.ufw:
+    direction: outgoing
+    policy: allow
+  ignore_errors: yes
+
+- name: Allow specified TCP ports through UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item | string }}"
+    proto: tcp
+  loop: "{{ ufw_allowed_tcp_ports }}"
+  ignore_errors: yes
+
+- name: Enable UFW firewall
+  community.general.ufw:
+    state: enabled
+  ignore_errors: yes
+
+- name: Ensure fail2ban service is enabled and started
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: yes
+  ignore_errors: yes

@@ -1,0 +1,31 @@
+---
+# Playbook 05: Automated Backup Scheduling
+- name: Configure periodic backup cron job
+  hosts: managed_nodes:sandbox
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: Ensure backup scripts directory exists
+      ansible.builtin.file:
+        path: /opt/infraops-tools/bash
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Copy backup script to target host
+      ansible.builtin.copy:
+        src: "../../bash/backup_automation.sh"
+        dest: /opt/infraops-tools/bash/backup_automation.sh
+        owner: root
+        group: root
+        mode: "0750"
+
+    - name: Schedule daily automated backup cron job
+      ansible.builtin.cron:
+        name: "InfraOps Daily Automated Backup"
+        minute: "0"
+        hour: "2"
+        job: "/opt/infraops-tools/bash/backup_automation.sh --backup > /var/log/infraops_backup.log 2>&1"
+        state: present

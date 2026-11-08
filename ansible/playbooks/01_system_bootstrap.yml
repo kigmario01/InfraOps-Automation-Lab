@@ -1,0 +1,9 @@
+---
+# Playbook 01: System Bootstrap
+- name: Bootstrap base Linux configuration
+  hosts: managed_nodes:sandbox
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - role: common

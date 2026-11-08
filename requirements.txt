@@ -1,0 +1,17 @@
+# Python dependencies for InfraOps Automation Lab
+# Note: Core scripts are designed to run with pure Python 3.10+ standard library.
+# These dependencies provide enhanced features (rich terminal tables, advanced HTTP checks, test runners).
+
+# Diagnostics & Monitoring (Optional enhancements)
+psutil>=5.9.0
+requests>=2.31.0
+rich>=13.7.0
+
+# Testing & Code Quality
+pytest>=8.0.0
+pytest-cov>=4.1.0
+flake8>=7.0.0
+black>=24.0.0
+
+# Ansible linting (used in CI/Linux environments)
+# ansible-lint>=6.0.0

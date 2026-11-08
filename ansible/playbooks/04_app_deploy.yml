@@ -1,0 +1,46 @@
+---
+# Playbook 04: Docker Stack Deployment
+- name: Deploy Docker Compose workload and observability services
+  hosts: managed_nodes:sandbox
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: Create destination deployment directory
+      ansible.builtin.file:
+        path: "{{ docker_deploy_dir | default('/opt/infraops-stack') }}"
+        state: directory
+        owner: "{{ sysadmin_user | default('sysadmin') }}"
+        group: docker
+        mode: "0775"
+
+    - name: Sync docker project directory to target host
+      ansible.builtin.copy:
+        src: "../../docker/"
+        dest: "{{ docker_deploy_dir | default('/opt/infraops-stack') }}/"
+        owner: "{{ sysadmin_user | default('sysadmin') }}"
+        group: docker
+        mode: "0755"
+
+    - name: Deploy .env file from template or example
+      ansible.builtin.copy:
+        src: "../../docker/.env.example"
+        dest: "{{ docker_deploy_dir | default('/opt/infraops-stack') }}/.env"
+        force: no
+        owner: "{{ sysadmin_user | default('sysadmin') }}"
+        group: docker
+        mode: "0600"
+
+    - name: Run docker compose pull and up
+      ansible.builtin.command:
+        cmd: docker compose up -d --remove-orphans
+        chdir: "{{ docker_deploy_dir | default('/opt/infraops-stack') }}"
+      register: compose_up_result
+      changed_when: "'Started' in compose_up_result.stdout or 'Created' in compose_up_result.stdout"
+
+    - name: Verify containers are up and healthy
+      ansible.builtin.command:
+        cmd: docker compose ps --format json
+        chdir: "{{ docker_deploy_dir | default('/opt/infraops-stack') }}"
+      register: compose_ps_result
+      changed_when: false
