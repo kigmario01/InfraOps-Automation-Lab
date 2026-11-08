@@ -9,12 +9,12 @@
 set -euo pipefail
 
 # Colors for terminal output
-BOLD="\033[1m"
-GREEN="\033[0;32m"
-CYAN="\033[0;36m"
-YELLOW="\033[1;33m"
-RED="\033[0;31m"
-RESET="\033[0m"
+BOLD=$'\033[1m'
+GREEN=$'\033[0;32m'
+CYAN=$'\033[0;36m'
+YELLOW=$'\033[1;33m'
+RED=$'\033[0;31m'
+RESET=$'\033[0m'
 
 OUTPUT_JSON=false
 OUTPUT_FILE=""
@@ -86,7 +86,7 @@ disk_percent=$(df -h / 2>/dev/null | awk 'NR==2 {print $5}')
 
 # Network IP
 ip_addrs=$(ip -4 -o addr show 2>/dev/null | awk '{print $2 ": " $4}' | tr '\n' ', ' | sed 's/, $//' || echo "N/A")
-default_gw=$(ip route show default 2>/dev/null | awk '{print $3}' || echo "N/A")
+default_gw=$(ip route show default 2>/dev/null | awk '{print $3}' | sort -u | tr '\n' ' ' | sed 's/ $//' || echo "N/A")
 
 # Docker check
 docker_installed=false

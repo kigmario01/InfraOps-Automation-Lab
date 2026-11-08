@@ -21,25 +21,39 @@ from typing import Any, Dict, List, Optional
 
 DEFAULT_ENDPOINTS = [
     {
-        "name": "Local Nginx Web App",
-        "url": "http://localhost:8080/healthz",
-        "expected_code": 200,
-        "timeout": 1.0,
-        "max_latency_ms": 300,
-    },
-    {
-        "name": "Local Uptime Kuma Status",
+        "name": "Uptime Kuma Dashboard",
         "url": "http://localhost:3001",
         "expected_code": 200,
         "timeout": 1.0,
         "max_latency_ms": 500,
     },
     {
-        "name": "Prometheus Node Exporter",
-        "url": "http://localhost:9100/metrics",
+        "name": "Servidor Showcase Web",
+        "url": "http://localhost:8082",
         "expected_code": 200,
         "timeout": 1.0,
-        "max_latency_ms": 250,
+        "max_latency_ms": 500,
+    },
+    {
+        "name": "Escuela App",
+        "url": "http://localhost:8081",
+        "expected_code": 200,
+        "timeout": 1.0,
+        "max_latency_ms": 500,
+    },
+    {
+        "name": "Homarr Dashboard",
+        "url": "http://localhost:7575",
+        "expected_code": 200,
+        "timeout": 1.0,
+        "max_latency_ms": 500,
+    },
+    {
+        "name": "InfraOps Demo Web App",
+        "url": "http://localhost:8090/healthz",
+        "expected_code": 200,
+        "timeout": 1.0,
+        "max_latency_ms": 300,
     },
     {
         "name": "Public Connectivity Check (Cloudflare)",
