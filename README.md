@@ -1,7 +1,7 @@
 # InfraOps Automation Lab 🚀
 ### Laboratorio Práctico de Automatización de Infraestructura TI, SysAdmin & DevOps
 
-[![CI Pipeline](https://github.com/tu-usuario/InfraOps-Automation-Lab/actions/workflows/ci.yml/badge.svg)](https://github.com/tu-usuario/InfraOps-Automation-Lab/actions)
+[![CI Pipeline](https://github.com/kigmario01/InfraOps-Automation-Lab/actions/workflows/ci.yml/badge.svg)](https://github.com/kigmario01/InfraOps-Automation-Lab/actions)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Ansible 2.15+](https://img.shields.io/badge/ansible-2.15%2B-red.svg)](https://www.ansible.com/)
 [![Docker Compose](https://img.shields.io/badge/docker-compose%20v2-2496ED.svg)](https://docs.docker.com/compose/)
@@ -130,7 +130,7 @@ InfraOps-Automation-Lab/
 
 ### 1. Clonar el repositorio e instalar dependencias
 ```bash
-git clone https://github.com/tu-usuario/InfraOps-Automation-Lab.git
+git clone https://github.com/kigmario01/InfraOps-Automation-Lab.git
 cd InfraOps-Automation-Lab
 pip install -r requirements.txt
 ```
