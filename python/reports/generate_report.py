@@ -14,17 +14,16 @@ import html
 import json
 import os
 import sys
+from typing import Any, Dict, Optional
 
 # Ensure repository root is in sys.path
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-from typing import Any, Dict, Optional
-
 # Import local diagnostics and monitoring modules
-from python.diagnostics.sys_diagnostics import run_diagnostics
-from python.monitoring.service_checker import check_all_services
+from python.diagnostics.sys_diagnostics import run_diagnostics  # noqa: E402
+from python.monitoring.service_checker import check_all_services  # noqa: E402
 
 
 def generate_html_report(data: Dict[str, Any]) -> str:
@@ -38,7 +37,9 @@ def generate_html_report(data: Dict[str, Any]) -> str:
     overall = data["overall_status"]
 
     # Color badge for overall status
-    status_bg = "#2ecc71" if overall == "HEALTHY" else ("#f39c12" if overall == "WARNING" else "#e74c3c")
+    status_bg = "#2ecc71" if overall == "HEALTHY" else (
+        "#f39c12" if overall == "WARNING" else "#e74c3c"
+    )
 
     # Generate disk rows
     disk_rows_html = ""
@@ -67,7 +68,8 @@ def generate_html_report(data: Dict[str, Any]) -> str:
         code = f"HTTP {s.get('http_code')}" if s.get('http_code') else "NO RESPONSE"
         service_rows_html += f"""
         <tr>
-            <td><strong>{html.escape(s.get('name', ''))}</strong><br><small class="text-muted">{html.escape(s.get('url', ''))}</small></td>
+            <td><strong>{html.escape(s.get('name', ''))}</strong><br>
+                <small class="text-muted">{html.escape(s.get('url', ''))}</small></td>
             <td><span class="badge" style="background-color: {st_color};">{st}</span></td>
             <td>{lat}</td>
             <td>{code}</td>
@@ -87,10 +89,17 @@ def generate_html_report(data: Dict[str, Any]) -> str:
             </tr>
             """
     else:
-        docker_rows_html = "<tr><td colspan='4' class='text-muted'>No running containers or Docker inactive.</td></tr>"
+        docker_rows_html = (
+            "<tr><td colspan='4' class='text-muted'>"
+            "No running containers or Docker inactive.</td></tr>"
+        )
 
-    cpu_bar_color = "#2ecc71" if cpu['usage_pct'] < 75 else ("#f39c12" if cpu['usage_pct'] < 90 else "#e74c3c")
-    mem_bar_color = "#2ecc71" if mem['used_pct'] < 80 else ("#f39c12" if mem['used_pct'] < 92 else "#e74c3c")
+    cpu_bar_color = "#2ecc71" if cpu['usage_pct'] < 75 else (
+        "#f39c12" if cpu['usage_pct'] < 90 else "#e74c3c"
+    )
+    mem_bar_color = "#2ecc71" if mem['used_pct'] < 80 else (
+        "#f39c12" if mem['used_pct'] < 92 else "#e74c3c"
+    )
 
     html_content = f"""<!DOCTYPE html>
 <html lang="es">
@@ -329,8 +338,8 @@ def generate_markdown_report(data: Dict[str, Any]) -> str:
 
     md = f"""# InfraOps Automation Lab - Infrastructure Status Report
 
-**Generated at:** `{data['timestamp']}`  
-**Host:** `{h['hostname']}` (`{h['os']} {h['os_release']}`) | **Uptime:** `{h['uptime_human']}`  
+**Generated at:** `{data['timestamp']}`<br>
+**Host:** `{h['hostname']}` (`{h['os']} {h['os_release']}`) | **Uptime:** `{h['uptime_human']}`<br>
 **Overall Status:** **`{overall}`**
 
 ---

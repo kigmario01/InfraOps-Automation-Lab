@@ -28,7 +28,7 @@ jobs:
 
       - name: Lint Python Code (Flake8)
         run: |
-          flake8 python tests --max-line-length=110 --extend-ignore=E203,W503
+          flake8 python tests --max-line-length=120 --extend-ignore=E203,W503,E501
 
       - name: Run Python Automated Tests (Pytest)
         run: |

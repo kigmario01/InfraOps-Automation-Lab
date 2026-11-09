@@ -22,6 +22,11 @@ class TestSysDiagnostics(unittest.TestCase):
         self.assertEqual(format_duration(86400), "1d 0h 0m")
         self.assertEqual(format_duration(90061), "1d 1h 1m")
 
+    def test_uptime_seconds(self):
+        uptime = get_uptime_seconds()
+        self.assertIsInstance(uptime, float)
+        self.assertGreaterEqual(uptime, 0.0)
+
     def test_cpu_info_structure(self):
         cpu = get_cpu_info()
         self.assertIn("cores", cpu)

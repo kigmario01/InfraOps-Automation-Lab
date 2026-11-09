@@ -24,11 +24,28 @@ REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-from python.diagnostics.network_probe import probe_dns, probe_tcp_port, probe_ssl_certificate, run_network_audit
-from python.diagnostics.sys_diagnostics import run_diagnostics, print_text_diagnostics
-from python.monitoring.alert_manager import AlertManager
-from python.monitoring.service_checker import check_all_services, DEFAULT_ENDPOINTS, load_endpoints_from_file
-from python.reports.generate_report import build_full_report_data, generate_html_report, generate_markdown_report
+# Import local modules with E402 ignored
+from python.diagnostics.network_probe import (  # noqa: E402
+    probe_dns,
+    probe_tcp_port,
+    probe_ssl_certificate,
+    run_network_audit,
+)
+from python.diagnostics.sys_diagnostics import (  # noqa: E402
+    run_diagnostics,
+    print_text_diagnostics,
+)
+from python.monitoring.alert_manager import AlertManager  # noqa: E402
+from python.monitoring.service_checker import (  # noqa: E402
+    check_all_services,
+    DEFAULT_ENDPOINTS,
+    load_endpoints_from_file,
+)
+from python.reports.generate_report import (  # noqa: E402
+    build_full_report_data,
+    generate_html_report,
+    generate_markdown_report,
+)
 
 
 def cmd_diagnose(args: argparse.Namespace) -> int:
