@@ -65,6 +65,13 @@ bash bash/backup_automation.sh --verify ./backups/<archivo_backup>.tar.gz
 bash bash/backup_automation.sh --restore ./backups/<archivo_backup>.tar.gz ./test_restore
 ```
 
+### Ejecución de Benchmark Automatizado (Medición RTO)
+Para cronometrar de forma reproducible la caída controlada, restauración y tiempo de respuesta de `/healthz`:
+```bash
+bash bash/dr_drill_simulation.sh
+```
+> Consulta el informe completo en [docs/disaster_recovery_drill.md](disaster_recovery_drill.md).
+
 ---
 
 ## 4. Gestión de Cambios con Ansible (Dry-Run e Idempotencia)

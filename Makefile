@@ -1,5 +1,5 @@
 # InfraOps Automation Lab - Makefile
-.PHONY: help install lint test inventory healthcheck report audit lab-up lab-down clean
+.PHONY: help install lint test inventory healthcheck report audit lab-up lab-down drill clean
 
 SHELL := /bin/bash
 PYTHON ?= python3
@@ -60,6 +60,9 @@ backup:
 
 audit:
 	@bash bash/security_audit.sh
+
+drill:
+	@bash bash/dr_drill_simulation.sh
 
 lab-up:
 	@docker compose -f sandbox/docker-compose.lab.yml up -d
