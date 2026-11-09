@@ -3,13 +3,6 @@
 InfraOps Automation Lab - Master CLI Tool
 File: python/infraops_cli.py
 Purpose: Unified command-line interface for diagnostics, monitoring, reports, and alerts.
-Usage:
-    python python/infraops_cli.py diagnose
-    python python/infraops_cli.py check-endpoints
-    python python/infraops_cli.py probe-network --host github.com
-    python python/infraops_cli.py report --output-dir reports
-    python python/infraops_cli.py alert --title "High CPU" --message "CPU usage is 95%"
-    python python/infraops_cli.py full-audit
 """
 
 from __future__ import annotations
@@ -25,12 +18,7 @@ if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
 # Import local modules with E402 ignored
-from python.diagnostics.network_probe import (  # noqa: E402
-    probe_dns,
-    probe_tcp_port,
-    probe_ssl_certificate,
-    run_network_audit,
-)
+from python.diagnostics.network_probe import run_network_audit  # noqa: E402
 from python.diagnostics.sys_diagnostics import (  # noqa: E402
     run_diagnostics,
     print_text_diagnostics,

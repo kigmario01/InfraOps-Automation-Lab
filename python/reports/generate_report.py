@@ -14,7 +14,7 @@ import html
 import json
 import os
 import sys
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 # Ensure repository root is in sys.path
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
